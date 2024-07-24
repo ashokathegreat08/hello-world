@@ -1,0 +1,37 @@
+import pandas as pd
+import datetime 
+  
+# Create a DataFrame with the original data  
+data = pd.read_csv(r"C:\Users\asinha259\Desktop\Personal python project docs\AUTOMATION 2 Book2.csv")  
+
+df = pd.DataFrame(data)  
+df
+
+# Transpose the DataFrame  
+df_transposed = df.transpose()  
+  
+# Set the first row as the column headers  
+new_header = df_transposed.iloc[0]  
+df_transposed = df_transposed[1:]  
+df_transposed.columns = new_header  
+
+df_transposed = df_transposed.reset_index().rename(columns={'index': 'Dates'})  
+  
+# Extract day, month, and weekday from the 'Dates' column  
+df_transposed['Days'] = pd.to_datetime(df_transposed['Dates']).dt.day  
+df_transposed['Names of days'] = pd.to_datetime(df_transposed['Dates']).dt.day_name()  
+df_transposed['Months'] = pd.to_datetime(df_transposed['Dates']).dt.month_name()  
+
+# Generate a dynamic file name with a timestamp  
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  
+file_name = f"Transposed_Atendence_{timestamp}.csv"  
+
+# Define the desired path for saving the file  
+path = r'C:\Users\asinha259\Desktop'
+
+# Save the transposed DataFrame as a CSV file  
+df_transposed.to_csv( path + "\\" + file_name , index=False) 
+
+
+# Display the transposed DataFrame  
+print(df_transposed) 
