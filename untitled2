@@ -1,0 +1,43 @@
+import nltk  
+from nltk.tokenize import word_tokenize  
+from nltk.corpus import stopwords  
+from nltk.stem import WordNetLemmatizer  
+  
+# Download necessary resources  
+nltk.download('punkt')  
+nltk.download('stopwords')  
+nltk.download('wordnet')  
+  
+# Initialize NLP components  
+lemmatizer = WordNetLemmatizer()  
+stop_words = set(stopwords.words('english'))  
+  
+# Define bot responses  
+bot_responses = {  
+    'hello': 'Hello! How can I assist you?',  
+    'goodbye': 'Goodbye! Have a nice day!',  
+    'help': 'I can help you with various tasks. Just let me know what you need.',  
+    # Add more responses based on your bot's capabilities  
+}  
+  
+# Function to preprocess user input  
+def preprocess_input(user_input):  
+    tokens = word_tokenize(user_input.lower())  # Tokenize and convert to lowercase  
+    tokens = [lemmatizer.lemmatize(token) for token in tokens]  # Lemmatize tokens  
+    tokens = [token for token in tokens if token.isalnum()]  # Remove non-alphanumeric tokens  
+    tokens = [token for token in tokens if token not in stop_words]  # Remove stop words  
+    return tokens  
+  
+# Function to generate bot response  
+def generate_response(user_input):  
+    tokens = preprocess_input(user_input)  
+    for token in tokens:  
+        if token in bot_responses:  
+            return bot_responses[token]  
+    return "I'm sorry, I don't understand. Can you please rephrase?"  
+  
+# Main loop  
+while True:  
+    user_input = input("You: ")  
+    response = generate_response(user_input)  
+    print("Bot:", response)
