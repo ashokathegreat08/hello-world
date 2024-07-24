@@ -1,0 +1,34 @@
+import pandas as pd
+#import datetime
+from pandasql import sqldf 
+  
+# Create a DataFrame with the original data  
+data = pd.read_csv(r"C:\Users\asinha259\Desktop\AUTOMATION 2 Book2.csv")  
+
+df = pd.DataFrame(data)  
+df
+
+ #Assuming df is your DataFrame  
+df_transposed = df.melt(id_vars=['EmpID', 'Names'], var_name='Dates', value_name='Value')
+df_transposed
+
+ 
+# Extract day, month, and weekday from the 'Dates' column
+df_transposed['Days'] = pd.to_datetime(df_transposed['Dates'], format='%m/%d/%Y', errors='coerce').dt.weekday
+df_transposed['Names of days'] = pd.to_datetime(df_transposed['Dates']).dt.day_name()  
+df_transposed['Months'] = pd.to_datetime(df_transposed['Dates']).dt.month_name()  
+df_transposed
+#pd.df_transposed.display.max_rows = #
+
+
+pd.set_option('display.max_rows', None)  # Show all rows  
+pd.set_option('display.max_columns', None)  # Show all columns  
+#print(df_transposed)
+
+query = "SELECT Distinct EmpID, Names, Months, Count(Value) as 'Total Present' FROM df_transposed WHERE Value = 'P' GROUP BY Months, EmpID, Names"
+result = sqldf(query, globals())
+print(result) 
+
+query_2 = "Select Distinct EmpID, Names, Months, Count(Value) as 'Total Present' FROM df_transposed WHERE Value = 'P' and Months = 'January'GROUP BY EmpID, Names, Months"
+result_2 = sqldf(query_2, globals())
+print(result_2)
