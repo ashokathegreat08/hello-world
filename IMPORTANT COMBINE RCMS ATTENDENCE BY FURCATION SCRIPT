@@ -1,0 +1,62 @@
+import pandas as pd  
+import datetime  
+  
+# Create a DataFrame with the original data  
+data = pd.read_csv(r"C:\Users\asinha259\Desktop\Personal python project docs\AUTOMATION 2 Book2.csv")  
+df = pd.DataFrame(data)
+print(df)
+
+df_transposed = df.melt(id_vars=['EmpID', 'Names'], var_name='Dates', value_name='Value')
+print(df_transposed)
+
+# Extract day, month, and weekday from the 'Dates' column
+df_transposed['Days'] = pd.to_datetime(df_transposed['Dates'], format='%m/%d/%Y', errors='coerce').dt.weekday
+df_transposed['Names of days'] = pd.to_datetime(df_transposed['Dates']).dt.day_name()  
+df_transposed['Months'] = pd.to_datetime(df_transposed['Dates']).dt.month_name()  
+print(df_transposed) 
+
+#pd.set_option('display.max_rows', None)  # Show all rows  
+#pd.set_option('display.max_columns', None)  # Show all columns  
+#df_transposed
+
+# Generate a dynamic file name with a timestamp  
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  
+file_name = f"Transposed_Atendence_{timestamp}.csv"  
+
+# Define the desired path for saving the file  
+path = r'C:\Users\asinha259\Desktop'
+
+# Save the transposed DataFrame as a CSV file  
+df_transposed.to_csv( path + "\\" + file_name , index=False) 
+
+
+# Display the transposed DataFrame  
+print(df_transposed)
+
+# Calculate the total working days for each month  
+df['Total Working Days'] = df.iloc[:, 2:].count(axis=1)  
+  
+# Calculate the total present days for each month  
+df['Total Present'] = df.iloc[:, 2:].apply(lambda row: row.str.count('P').sum(), axis=1)  
+  
+# Calculate the total absent days for each month  
+df['Total Absent'] = df['Total Working Days'] - df['Total Present']  
+  
+# Rename the columns  
+df = df.rename(columns={'EmpID': 'EmpID', 'Names': 'Name'})  
+  
+# Select the required columns  
+result = df[['EmpID', 'Name', 'Total Working Days', 'Total Present', 'Total Absent']]  
+#print(result) 
+# Generate a dynamic file name with a timestamp  
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")  
+file_name = f"RCMS_MONTH_WISE_Attendance_{timestamp}.csv"  
+  
+# Define the desired path for saving the file  
+path = r'C:\Users\asinha259\Desktop'  
+  
+# Save the result DataFrame as a CSV file  
+result.to_csv(path + "\\" + file_name, index=False)  
+  
+# Print the final result  
+print(result)
