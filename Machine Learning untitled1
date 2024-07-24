@@ -1,0 +1,33 @@
+import pandas as pd  
+from sklearn.model_selection import train_test_split  
+from sklearn.ensemble import RandomForestRegressor  
+from sklearn.metrics import mean_absolute_error  
+  
+# Load the data  
+df = pd.read_csv('Absenteeism_data_CHATBOT.txt', delimiter='\t')  
+  
+# Convert the 'Date' column to datetime format  
+df['Date'] = pd.to_datetime(df['Date'])  
+  
+# Create a new column for the month  
+df['Month'] = df['Date'].dt.month  
+  
+# Predict the 'Absenteeism Time in Hours' for the next month  
+# So, we will drop the 'Date' and 'Absenteeism Time in Hours' from the features  
+X = df.drop(['Date', 'Absenteeism Time in Hours'], axis=1)  
+y = df['Absenteeism Time in Hours']  
+  
+# Split the data into training and testing sets (80:20 ratio)  
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)  
+  
+# Use a random forest regressor for prediction  
+model = RandomForestRegressor(n_estimators=100, random_state=42)  
+model.fit(X_train, y_train)  
+  
+# Make predictions  
+predictions = model.predict(X_test)  
+  
+# Calculate the mean absolute error  
+mae = mean_absolute_error(y_test, predictions)  
+  
+print(f"Mean Absolute Error: {mae}")
