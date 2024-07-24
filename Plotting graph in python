@@ -1,0 +1,19 @@
+import pandas as pd  
+import matplotlib.pyplot as plt  
+  
+# Read CSV file  
+csv_file_path = r'C:\Users\asinha259\Desktop\Absenteeism_data.csv'  
+df = pd.read_csv(csv_file_path)  
+  
+# Extract 'Date' and 'Absenteeism Time in Hours' columns  
+df['Date'] = pd.to_datetime(df['Date'])  # Convert 'Date' column to datetime format  
+x = df['Date']  
+y = df['Absenteeism Time in Hours']  
+  
+# Create a line graph  
+plt.plot(x, y)  
+plt.xlabel('Date')  
+plt.ylabel('Absenteeism Time (Hours)')  
+plt.title('Employee Absenteeism')  
+plt.xticks(rotation=45)  
+plt.show()
